@@ -4,9 +4,11 @@ import { defer } from 'rxjs';
 
 @Injectable()
 export class SharedUtilsFileManagerService {
+  fs = promises;
+
   writeFile(name: string, content: unknown) {
     return defer(() =>
-      promises.writeFile(
+      this.fs.writeFile(
         `${__dirname}/assets/graphs/${name}.json`,
         JSON.stringify(content),
       ),
