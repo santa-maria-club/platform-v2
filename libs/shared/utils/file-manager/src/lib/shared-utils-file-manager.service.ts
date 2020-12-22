@@ -1,5 +1,5 @@
 import { promises } from 'fs';
-import { defer, Observable } from 'rxjs';
+import { defer, Observable, of } from 'rxjs';
 
 export const SHARED_UTILS_FILE_MANAGER_SERVICE =
   'SHARED_UTILS_FILE_MANAGER_SERVICE';
@@ -14,7 +14,9 @@ export interface ISharedUtilsFileManagerService {
 export class SharedUtilsFileManagerServiceMock
   implements ISharedUtilsFileManagerService {
   fs: null;
-  writeFile: (location: string, content: unknown) => null;
+  writeFile() {
+    return of(null);
+  }
 }
 
 export class SharedUtilsFileManagerService
