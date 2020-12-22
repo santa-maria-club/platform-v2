@@ -85,6 +85,40 @@
           }
         }
       }
+    },
+    "shared-utils-irrigation-creators": {
+      "root": "libs/shared/utils/irrigation-creators",
+      "sourceRoot": "libs/shared/utils/irrigation-creators/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/utils/irrigation-creators/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/utils/irrigation-creators"],
+          "options": {
+            "jestConfig": "libs/shared/utils/irrigation-creators/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/shared/utils/irrigation-creators",
+            "tsConfig": "libs/shared/utils/irrigation-creators/tsconfig.lib.json",
+            "packageJson": "libs/shared/utils/irrigation-creators/package.json",
+            "main": "libs/shared/utils/irrigation-creators/src/index.ts",
+            "assets": ["libs/shared/utils/irrigation-creators/*.md"]
+          }
+        }
+      }
     }
   },
   "cli": {

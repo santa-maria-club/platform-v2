@@ -17,6 +17,9 @@
     "paths": {
       "@platform/shared/utils/irrigation-api-interfaces": [
         "libs/shared/utils/irrigation-api-interfaces/src/index.ts"
+      ],
+      "@platform/shared/utils/irrigation-creators": [
+        "libs/shared/utils/irrigation-creators/src/index.ts"
       ]
     }
   },
