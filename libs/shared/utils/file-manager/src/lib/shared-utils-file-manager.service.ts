@@ -1,5 +1,6 @@
 import { promises } from 'fs';
 import { defer, Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export const SHARED_UTILS_FILE_MANAGER_SERVICE =
   'SHARED_UTILS_FILE_MANAGER_SERVICE';
@@ -48,6 +49,8 @@ export class SharedUtilsFileManagerService
   }
 
   readFile(location: string) {
-    return defer(() => this.fs.readFile(location));
+    return defer(() => this.fs.readFile(location, 'utf8')).pipe(
+      map((file) => JSON.parse(file)),
+    );
   }
 }
