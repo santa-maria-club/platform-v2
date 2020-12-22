@@ -5,6 +5,7 @@ import {
 } from '@platform/shared/utils/irrigation-api-interfaces';
 
 export interface CreateGraphOptions {
+  id?: string;
   location: string;
 }
 
@@ -12,8 +13,8 @@ export const createGraphFromCreateGraphDto = (
   createGraphDto: CreateGraphDto,
   options: CreateGraphOptions,
 ): Graph => ({
-  id: uuid() || '',
-  name: createGraphDto.name || '',
+  id: options.id || uuid(),
+  name: createGraphDto.name,
   location: options.location,
   nodes: [],
   edges: [],
