@@ -1,14 +1,38 @@
-import { Injectable } from '@nestjs/common';
-import { of } from 'rxjs';
+import { Inject } from '@nestjs/common';
+import { Observable, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 
-import type { CreateGraphDto } from '@platform/shared/utils/irrigation-api-interfaces';
+import type {
+  CreateGraphDto,
+  Graph,
+} from '@platform/shared/utils/irrigation-api-interfaces';
 import { createGraphFromCreateGraphDto } from '@platform/shared/utils/irrigation-creators';
-import { SharedUtilsFileManagerService } from '@platform/shared/utils/file-manager';
+import type { ISharedUtilsFileManagerService } from '@platform/shared/utils/file-manager';
+import { SHARED_UTILS_FILE_MANAGER_SERVICE } from '@platform/shared/utils/file-manager';
 
-@Injectable()
-export class GraphService {
-  constructor(private fileManagerService: SharedUtilsFileManagerService) {}
+export const GRAPH_SERVICE = 'GRAPH_SERVICE';
+
+export interface IGraphService {
+  create: (createGraphDto: CreateGraphDto) => Observable<Graph>;
+}
+
+export class GraphServiceMock implements IGraphService {
+  create(createGraphDto: CreateGraphDto) {
+    return of({
+      id: '123',
+      name: createGraphDto.name,
+      location: 'location-123',
+      nodes: [],
+      edges: [],
+    });
+  }
+}
+
+export class GraphService implements IGraphService {
+  constructor(
+    @Inject(SHARED_UTILS_FILE_MANAGER_SERVICE)
+    private fileManagerService: ISharedUtilsFileManagerService,
+  ) {}
 
   create(createGraphDto: CreateGraphDto) {
     return of(

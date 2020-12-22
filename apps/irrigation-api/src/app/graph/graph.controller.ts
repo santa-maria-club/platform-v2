@@ -1,11 +1,12 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 
 import type { CreateGraphDto } from '@platform/shared/utils/irrigation-api-interfaces';
-import { GraphService } from './graph.service';
+import type { IGraphService } from './graph.service';
+import { GRAPH_SERVICE } from './graph.service';
 
 @Controller('graphs')
 export class GraphController {
-  constructor(private graphService: GraphService) {}
+  constructor(@Inject(GRAPH_SERVICE) private graphService: IGraphService) {}
 
   @Post()
   create(@Body() createGraphDto: CreateGraphDto) {
