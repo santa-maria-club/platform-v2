@@ -1,9 +1,17 @@
 import { Module } from '@nestjs/common';
-import { SharedUtilsFileManagerService } from './shared-utils-file-manager.service';
+import {
+  SharedUtilsFileManagerService,
+  SHARED_UTILS_FILE_MANAGER_SERVICE,
+} from './shared-utils-file-manager.service';
 
 @Module({
   controllers: [],
-  providers: [SharedUtilsFileManagerService],
+  providers: [
+    {
+      provide: SHARED_UTILS_FILE_MANAGER_SERVICE,
+      useClass: SharedUtilsFileManagerService,
+    },
+  ],
   exports: [SharedUtilsFileManagerService],
 })
 export class SharedUtilsFileManagerModule {}

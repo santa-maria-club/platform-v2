@@ -1,9 +1,24 @@
-import { Injectable } from '@nestjs/common';
 import { promises } from 'fs';
-import { defer } from 'rxjs';
+import { defer, Observable } from 'rxjs';
 
-@Injectable()
-export class SharedUtilsFileManagerService {
+export const SHARED_UTILS_FILE_MANAGER_SERVICE =
+  'SHARED_UTILS_FILE_MANAGER_SERVICE';
+
+export interface ISharedUtilsFileManagerService {
+  fs: {
+    writeFile: (location: string, content: string) => void;
+  };
+  writeFile: (location: string, content: unknown) => Observable<void>;
+}
+
+export class SharedUtilsFileManagerServiceMock
+  implements ISharedUtilsFileManagerService {
+  fs: null;
+  writeFile: (location: string, content: unknown) => null;
+}
+
+export class SharedUtilsFileManagerService
+  implements ISharedUtilsFileManagerService {
   fs = promises;
 
   writeFile(location: string, content: unknown) {

@@ -1,16 +1,27 @@
 import { Test } from '@nestjs/testing';
 
-import { SharedUtilsFileManagerService } from './shared-utils-file-manager.service';
+import {
+  SHARED_UTILS_FILE_MANAGER_SERVICE,
+  ISharedUtilsFileManagerService,
+  SharedUtilsFileManagerService,
+} from './shared-utils-file-manager.service';
 
 describe('SharedUtilsFileManagerService', () => {
-  let service: SharedUtilsFileManagerService;
+  let service: ISharedUtilsFileManagerService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      providers: [SharedUtilsFileManagerService],
+      providers: [
+        {
+          provide: SHARED_UTILS_FILE_MANAGER_SERVICE,
+          useClass: SharedUtilsFileManagerService,
+        },
+      ],
     }).compile();
 
-    service = module.get(SharedUtilsFileManagerService);
+    service = module.get<ISharedUtilsFileManagerService>(
+      SHARED_UTILS_FILE_MANAGER_SERVICE,
+    );
   });
 
   it('should be defined', () => {
