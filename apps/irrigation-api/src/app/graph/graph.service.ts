@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { promises } from 'fs';
 
-import { CreateGraphDto } from '@platform/shared/utils/irrigation-api-interfaces';
+import type { CreateGraphDto } from '@platform/shared/utils/irrigation-api-interfaces';
 import { createGraphFromCreateGraphDto } from '@platform/shared/utils/irrigation-creators';
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 
-import { CreateGraphDto } from '@platform/shared/utils/irrigation-api-interfaces';
+import type { CreateGraphDto } from '@platform/shared/utils/irrigation-api-interfaces';
 import { GraphService } from './graph.service';
 
 @Controller('graphs')
