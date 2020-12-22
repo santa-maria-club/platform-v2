@@ -12,6 +12,11 @@ import {
       useClass: SharedUtilsFileManagerService,
     },
   ],
-  exports: [SharedUtilsFileManagerService],
+  exports: [
+    {
+      provide: SHARED_UTILS_FILE_MANAGER_SERVICE,
+      useClass: SharedUtilsFileManagerService,
+    },
+  ],
 })
 export class SharedUtilsFileManagerModule {}
