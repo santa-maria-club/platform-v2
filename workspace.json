@@ -51,6 +51,95 @@
           }
         }
       }
+    },
+    "shared-utils-irrigation-api-interfaces": {
+      "root": "libs/shared/utils/irrigation-api-interfaces",
+      "sourceRoot": "libs/shared/utils/irrigation-api-interfaces/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/utils/irrigation-api-interfaces/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/utils/irrigation-api-interfaces"],
+          "options": {
+            "jestConfig": "libs/shared/utils/irrigation-api-interfaces/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/shared/utils/irrigation-api-interfaces",
+            "tsConfig": "libs/shared/utils/irrigation-api-interfaces/tsconfig.lib.json",
+            "packageJson": "libs/shared/utils/irrigation-api-interfaces/package.json",
+            "main": "libs/shared/utils/irrigation-api-interfaces/src/index.ts",
+            "assets": ["libs/shared/utils/irrigation-api-interfaces/*.md"]
+          }
+        }
+      }
+    },
+    "shared-utils-irrigation-creators": {
+      "root": "libs/shared/utils/irrigation-creators",
+      "sourceRoot": "libs/shared/utils/irrigation-creators/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/utils/irrigation-creators/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/utils/irrigation-creators"],
+          "options": {
+            "jestConfig": "libs/shared/utils/irrigation-creators/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/shared/utils/irrigation-creators",
+            "tsConfig": "libs/shared/utils/irrigation-creators/tsconfig.lib.json",
+            "packageJson": "libs/shared/utils/irrigation-creators/package.json",
+            "main": "libs/shared/utils/irrigation-creators/src/index.ts",
+            "assets": ["libs/shared/utils/irrigation-creators/*.md"]
+          }
+        }
+      }
+    },
+    "shared-utils-file-manager": {
+      "root": "libs/shared/utils/file-manager",
+      "sourceRoot": "libs/shared/utils/file-manager/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/shared/utils/file-manager/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/utils/file-manager"],
+          "options": {
+            "jestConfig": "libs/shared/utils/file-manager/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {
