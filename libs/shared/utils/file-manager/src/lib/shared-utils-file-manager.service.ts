@@ -6,12 +6,7 @@ import { defer } from 'rxjs';
 export class SharedUtilsFileManagerService {
   fs = promises;
 
-  writeFile(name: string, content: unknown) {
-    return defer(() =>
-      this.fs.writeFile(
-        `${__dirname}/assets/graphs/${name}.json`,
-        JSON.stringify(content),
-      ),
-    );
+  writeFile(location: string, content: unknown) {
+    return defer(() => this.fs.writeFile(location, JSON.stringify(content)));
   }
 }
