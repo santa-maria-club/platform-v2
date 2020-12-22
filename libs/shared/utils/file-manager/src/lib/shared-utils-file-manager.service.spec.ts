@@ -18,19 +18,6 @@ describe('SharedUtilsFileManagerService', () => {
   });
 
   describe('Write File Method', () => {
-    it('should save the file in assets/graphs/<name>.json', () => {
-      // arrange
-      const name = 'test';
-      const path = `${__dirname}/assets/graphs/${name}.json`;
-      const writeFileSpy = jest.spyOn(service.fs, 'writeFile');
-      const contentAsString = '{}';
-      // act
-      service.writeFile(name, {}).subscribe();
-      // assert
-      expect(writeFileSpy).toHaveBeenCalled();
-      expect(writeFileSpy).toHaveBeenCalledWith(path, contentAsString);
-    });
-
     it('should store content as a JSON string', () => {
       // arrange
       const name = 'test';
@@ -39,7 +26,7 @@ describe('SharedUtilsFileManagerService', () => {
       const content = { name };
       const contentAsString = JSON.stringify(content);
       // act
-      service.writeFile(name, content).subscribe();
+      service.writeFile(path, content).subscribe();
       // assert
       expect(writeFileSpy).toHaveBeenCalled();
       expect(writeFileSpy).toHaveBeenCalledWith(path, contentAsString);
