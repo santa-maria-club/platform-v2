@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { Observable, of } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 
 import type {
@@ -21,6 +21,7 @@ export interface IGraphService {
     createGraphDto: CreateGraphDto,
     options: CreateGraphOptions,
   ) => Observable<Graph>;
+  list: (options: CreateGraphOptions) => Observable<Graph[]>;
 }
 
 export class GraphServiceMock implements IGraphService {
@@ -32,6 +33,17 @@ export class GraphServiceMock implements IGraphService {
       nodes: [],
       edges: [],
     });
+  }
+  list(options: CreateGraphOptions) {
+    return of([
+      {
+        id: '123',
+        name: 'name-123',
+        location: `${options.rootDirectory}/assets/graphs/name-123.json`,
+        nodes: [],
+        edges: [],
+      },
+    ]);
   }
 }
 
@@ -53,5 +65,21 @@ export class GraphService implements IGraphService {
           .pipe(map(() => graph)),
       ),
     );
+  }
+
+  list(options: CreateGraphOptions) {
+    return this.fileManagerService
+      .readDirectory(`${options.rootDirectory}/assets/graphs`)
+      .pipe(
+        mergeMap((files) =>
+          combineLatest(
+            files.map((file) =>
+              this.fileManagerService
+                .readFile(`${options.rootDirectory}/assets/graphs/${file}`)
+                .pipe(map((file) => file as Graph)),
+            ),
+          ),
+        ),
+      );
   }
 }

@@ -4,3 +4,9 @@ content-type: application/json
 {
   "name": "sample-123"
 }
+
+###
+
+GET http://localhost:3333/api/graphs HTTP/1.1
+content-type: application/json
+

@@ -43,4 +43,30 @@ describe('SharedUtilsFileManagerService', () => {
       expect(writeFileSpy).toHaveBeenCalledWith(path, contentAsString);
     });
   });
+
+  describe('Read Directory Method', () => {
+    it('should read directory and return a list of files', () => {
+      // arrange
+      const path = `${__dirname}/assets/graphs`;
+      const readDirSpy = jest.spyOn(service.fs, 'readdir');
+      // act
+      service.readDirectory(path).subscribe();
+      // assert
+      expect(readDirSpy).toHaveBeenCalled();
+      expect(readDirSpy).toHaveBeenCalledWith(path);
+    });
+  });
+
+  describe('Read File Method', () => {
+    it('should read a file and return its content', () => {
+      // arrange
+      const path = `${__dirname}/assets/graphs`;
+      const readFileSpy = jest.spyOn(service.fs, 'readFile');
+      // act
+      service.readFile(path).subscribe();
+      // assert
+      expect(readFileSpy).toHaveBeenCalled();
+      expect(readFileSpy).toHaveBeenCalledWith(path, 'utf8');
+    });
+  });
 });

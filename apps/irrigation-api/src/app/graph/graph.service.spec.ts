@@ -57,4 +57,20 @@ describe('GraphService', () => {
       expect(writeFileSpy).toHaveBeenCalledWith(location, expectedGraph);
     });
   });
+
+  describe('List Method', () => {
+    it('should call readDirectory and then readFile for each file', () => {
+      // arrange
+      const readDirectorySpy = jest.spyOn(fileManagerService, 'readDirectory');
+      const readFileSpy = jest.spyOn(fileManagerService, 'readFile');
+      const rootDirectory = '/home';
+      const directoryLocation = `${rootDirectory}/assets/graphs`;
+      // act
+      service.list({ rootDirectory }).subscribe();
+      // assert
+      expect(readDirectorySpy).toHaveBeenCalled();
+      expect(readDirectorySpy).toHaveBeenCalledWith(directoryLocation);
+      expect(readFileSpy).toHaveBeenCalledTimes(2);
+    });
+  });
 });
