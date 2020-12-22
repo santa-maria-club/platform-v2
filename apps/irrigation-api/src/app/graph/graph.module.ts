@@ -1,4 +1,8 @@
 import { Module } from '@nestjs/common'
 
-@Module({})
+import { GraphService } from './graph.service'
+
+@Module({
+  providers: [GraphService],
+})
 export class GraphModule {}
