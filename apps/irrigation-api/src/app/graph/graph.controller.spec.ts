@@ -40,4 +40,17 @@ describe('GraphController', () => {
       expect(createSpy).toHaveBeenCalledWith(createGraphDto, options);
     });
   });
+
+  describe('List Method', () => {
+    it('should call list from graph service', () => {
+      // arrange
+      const listSpy = jest.spyOn(graphService, 'list');
+      const options = { rootDirectory: __dirname };
+      // act
+      controller.list().subscribe();
+      // assert
+      expect(listSpy).toHaveBeenCalled();
+      expect(listSpy).toHaveBeenCalledWith(options);
+    });
+  });
 });
