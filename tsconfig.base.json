@@ -20,6 +20,9 @@
       ],
       "@platform/shared/utils/irrigation-creators": [
         "libs/shared/utils/irrigation-creators/src/index.ts"
+      ],
+      "@platform/shared/utils/file-manager": [
+        "libs/shared/utils/file-manager/src/index.ts"
       ]
     }
   },
