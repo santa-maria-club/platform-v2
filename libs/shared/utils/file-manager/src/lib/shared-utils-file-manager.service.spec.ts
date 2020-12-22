@@ -66,7 +66,7 @@ describe('SharedUtilsFileManagerService', () => {
       service.readFile(path).subscribe();
       // assert
       expect(readFileSpy).toHaveBeenCalled();
-      expect(readFileSpy).toHaveBeenCalledWith(path);
+      expect(readFileSpy).toHaveBeenCalledWith(path, 'utf8');
     });
   });
 });
