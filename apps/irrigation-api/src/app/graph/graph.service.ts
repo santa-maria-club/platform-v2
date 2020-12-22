@@ -18,7 +18,7 @@ export class GraphService {
     ).pipe(
       mergeMap((graph) =>
         this.fileManagerService
-          .writeFile(graph.name, graph)
+          .writeFile(graph.location, graph)
           .pipe(map(() => graph)),
       ),
     );
