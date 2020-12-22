@@ -1,22 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { promises } from 'fs';
+import { of } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 
 import type { CreateGraphDto } from '@platform/shared/utils/irrigation-api-interfaces';
 import { createGraphFromCreateGraphDto } from '@platform/shared/utils/irrigation-creators';
+import { SharedUtilsFileManagerService } from '@platform/shared/utils/file-manager';
 
 @Injectable()
 export class GraphService {
-  async create(createGraphDto: CreateGraphDto) {
-    try {
-      const location = `${__dirname}/assets/graphs/${createGraphDto.name}.json`;
-      const graph = createGraphFromCreateGraphDto(createGraphDto, { location });
-      await promises.writeFile(
-        `${__dirname}/assets/graphs/${graph.name}.json`,
-        JSON.stringify(graph),
-      );
-      return graph;
-    } catch (err) {
-      throw Error('Error creating a graph');
-    }
+  constructor(private fileManagerService: SharedUtilsFileManagerService) {}
+
+  create(createGraphDto: CreateGraphDto) {
+    return of(
+      createGraphFromCreateGraphDto(createGraphDto, {
+        location: `${__dirname}/assets/graphs/${createGraphDto.name}.json`,
+      }),
+    ).pipe(
+      mergeMap((graph) =>
+        this.fileManagerService
+          .writeFile(graph.name, graph)
+          .pipe(map(() => graph)),
+      ),
+    );
   }
 }
