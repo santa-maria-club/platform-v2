@@ -14,7 +14,17 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@platform/shared/utils/irrigation-api-interfaces": [
+        "libs/shared/utils/irrigation-api-interfaces/src/index.ts"
+      ],
+      "@platform/shared/utils/irrigation-creators": [
+        "libs/shared/utils/irrigation-creators/src/index.ts"
+      ],
+      "@platform/shared/utils/file-manager": [
+        "libs/shared/utils/file-manager/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

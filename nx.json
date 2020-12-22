@@ -25,6 +25,15 @@
   "projects": {
     "irrigation-api": {
       "tags": []
+    },
+    "shared-utils-irrigation-api-interfaces": {
+      "tags": []
+    },
+    "shared-utils-irrigation-creators": {
+      "tags": []
+    },
+    "shared-utils-file-manager": {
+      "tags": []
     }
   }
 }
