@@ -10,6 +10,8 @@ export class GraphController {
 
   @Post()
   create(@Body() createGraphDto: CreateGraphDto) {
-    return this.graphService.create(createGraphDto);
+    return this.graphService.create(createGraphDto, {
+      rootDirectory: __dirname,
+    });
   }
 }
