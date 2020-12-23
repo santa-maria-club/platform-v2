@@ -1,6 +1,18 @@
-import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 
-import type { CreateGraphDto } from '@platform/shared/utils/irrigation-api-interfaces';
+import type {
+  CreateGraphDto,
+  Edge,
+  Node,
+} from '@platform/shared/utils/irrigation-api-interfaces';
 import type { IGraphService } from './graph.service';
 import { GRAPH_SERVICE } from './graph.service';
 
@@ -18,6 +30,17 @@ export class GraphController {
   @Get()
   list() {
     return this.graphService.list({
+      rootDirectory: __dirname,
+    });
+  }
+
+  @Put(':graphId')
+  update(
+    @Param('graphId') graphId: string,
+    @Body('nodes') nodes: Node[],
+    @Body('edges') edges: Edge[],
+  ) {
+    return this.graphService.update(graphId, nodes, edges, {
       rootDirectory: __dirname,
     });
   }
