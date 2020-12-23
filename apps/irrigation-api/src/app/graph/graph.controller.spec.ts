@@ -53,4 +53,18 @@ describe('GraphController', () => {
       expect(listSpy).toHaveBeenCalledWith(options);
     });
   });
+
+  it('should call update from graph service', () => {
+    // arrange
+    const graphId = '123';
+    const nodes = [];
+    const edges = [];
+    const updateSpy = jest.spyOn(graphService, 'update');
+    const options = { rootDirectory: __dirname };
+    // act
+    controller.update(graphId, nodes, edges).subscribe();
+    // assert
+    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith(graphId, nodes, edges, options);
+  });
 });
