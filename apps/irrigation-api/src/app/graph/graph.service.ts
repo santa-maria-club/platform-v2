@@ -4,7 +4,9 @@ import { map, mergeMap } from 'rxjs/operators';
 
 import type {
   CreateGraphDto,
+  Edge,
   Graph,
+  Node,
 } from '@platform/shared/utils/irrigation-api-interfaces';
 import { createGraphFromCreateGraphDto } from '@platform/shared/utils/irrigation-creators';
 import type { ISharedUtilsFileManagerService } from '@platform/shared/utils/file-manager';
@@ -12,20 +14,26 @@ import { SHARED_UTILS_FILE_MANAGER_SERVICE } from '@platform/shared/utils/file-m
 
 export const GRAPH_SERVICE = 'GRAPH_SERVICE';
 
-export interface CreateGraphOptions {
+export interface GraphOptions {
   rootDirectory: string;
 }
 
 export interface IGraphService {
   create: (
     createGraphDto: CreateGraphDto,
-    options: CreateGraphOptions,
+    options: GraphOptions,
   ) => Observable<Graph>;
-  list: (options: CreateGraphOptions) => Observable<Graph[]>;
+  list: (options: GraphOptions) => Observable<Graph[]>;
+  update: (
+    graphId: string,
+    nodes: Node[],
+    edges: Edge[],
+    options: GraphOptions,
+  ) => Observable<Graph>;
 }
 
 export class GraphServiceMock implements IGraphService {
-  create(createGraphDto: CreateGraphDto, options: CreateGraphOptions) {
+  create(createGraphDto: CreateGraphDto, options: GraphOptions) {
     return of({
       id: '123',
       name: createGraphDto.name,
@@ -34,7 +42,7 @@ export class GraphServiceMock implements IGraphService {
       edges: [],
     });
   }
-  list(options: CreateGraphOptions) {
+  list(options: GraphOptions) {
     return of([
       {
         id: '123',
@@ -45,6 +53,15 @@ export class GraphServiceMock implements IGraphService {
       },
     ]);
   }
+  update(graphId: string, nodes: Node[], edges: Edge[], options: GraphOptions) {
+    return of({
+      id: graphId,
+      name: 'name-123',
+      location: `${options.rootDirectory}/assets/graphs/name-123.json`,
+      nodes,
+      edges,
+    });
+  }
 }
 
 export class GraphService implements IGraphService {
@@ -53,7 +70,7 @@ export class GraphService implements IGraphService {
     private fileManagerService: ISharedUtilsFileManagerService,
   ) {}
 
-  create(createGraphDto: CreateGraphDto, options: CreateGraphOptions) {
+  create(createGraphDto: CreateGraphDto, options: GraphOptions) {
     return of(
       createGraphFromCreateGraphDto(createGraphDto, {
         location: `${options.rootDirectory}/assets/graphs/${createGraphDto.name}.json`,
@@ -67,7 +84,7 @@ export class GraphService implements IGraphService {
     );
   }
 
-  list(options: CreateGraphOptions) {
+  list(options: GraphOptions) {
     return this.fileManagerService
       .readDirectory(`${options.rootDirectory}/assets/graphs`)
       .pipe(
@@ -81,5 +98,21 @@ export class GraphService implements IGraphService {
           ),
         ),
       );
+  }
+
+  update(graphId: string, nodes: Node[], edges: Edge[], options: GraphOptions) {
+    return this.list(options).pipe(
+      map((graphs) =>
+        graphs
+          .filter((graph) => graph.id === graphId)
+          .reduce((_, curr) => curr),
+      ),
+      mergeMap((graph) => {
+        const updatedGraph = { ...graph, nodes, edges };
+        return this.fileManagerService
+          .writeFile(graph.location, updatedGraph)
+          .pipe(map(() => updatedGraph));
+      }),
+    );
   }
 }

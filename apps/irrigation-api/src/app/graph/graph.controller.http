@@ -10,3 +10,35 @@ content-type: application/json
 GET http://localhost:3333/api/graphs HTTP/1.1
 content-type: application/json
 
+
+###
+
+PUT http://localhost:3333/api/graphs/89ccf40b-2f47-4100-a90e-8f23fa5ece3f HTTP/1.1
+content-type: application/json
+
+{
+  "nodes":[{
+    "id":"89ccf40b-2f47-4100-a90e-8f23fa5ece3g",
+    "kind": "faucet",
+    "label": "Faucet #1"
+  },{
+    "id":"89ccf40b-2f47-4100-a90e-8f23fa5ece3h",
+    "kind": "filter",
+    "label": "Filter #1"
+  }],
+  "edges":[{
+    "id": "89ccf40b-2f47-4100-a90e-8f23fa5ece3j",
+    "source": "89ccf40b-2f47-4100-a90e-8f23fa5ece3g",
+    "target": "89ccf40b-2f47-4100-a90e-8f23fa5ece3h"
+  }]
+}
+
+###
+
+PUT http://localhost:3333/api/graphs/89ccf40b-2f47-4100-a90e-8f23fa5ece3f HTTP/1.1
+content-type: application/json
+
+{
+  "nodes":[],
+  "edges":[]
+}
