@@ -11,8 +11,7 @@ import {
 
 import type {
   CreateGraphDto,
-  Edge,
-  Node,
+  Graph,
 } from '@platform/shared/utils/irrigation-api-interfaces';
 import type { IGraphService } from './graph.service';
 import { GRAPH_SERVICE } from './graph.service';
@@ -36,19 +35,15 @@ export class GraphController {
   }
 
   @Put(':graphId')
-  update(
-    @Param('graphId') graphId: string,
-    @Body('nodes') nodes: Node[],
-    @Body('edges') edges: Edge[],
-  ) {
-    return this.graphService.update(graphId, nodes, edges, {
+  update(@Param('graphId') graphId: string, @Body() changes: Partial<Graph>) {
+    return this.graphService.update(graphId, changes, {
       rootDirectory: __dirname,
     });
   }
 
   @Patch(':graphId/rename')
-  rename(@Param('graphId') graphId: string, @Body('newName') newName: string) {
-    return this.graphService.rename(graphId, newName, {
+  rename(@Param('graphId') graphId: string, @Body('name') name: string) {
+    return this.graphService.rename(graphId, name, {
       rootDirectory: __dirname,
     });
   }
