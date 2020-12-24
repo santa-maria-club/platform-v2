@@ -142,11 +142,11 @@ export class GraphService implements IGraphService {
   rename(graphId: string, newName: string, options: GraphOptions) {
     const newLocation = `${options.rootDirectory}/assets/graphs/${newName}.json`;
     return this.view(graphId, options).pipe(
-      mergeMap((graph) => {
-        return this.fileManagerService
+      mergeMap((graph) =>
+        this.fileManagerService
           .rename(graph.location, newLocation)
-          .pipe(map(() => graph));
-      }),
+          .pipe(map(() => graph)),
+      ),
       mergeMap((graph) => {
         const updatedGraph = {
           ...graph,
@@ -154,7 +154,7 @@ export class GraphService implements IGraphService {
           location: newLocation,
         };
         return this.fileManagerService
-          .writeFile(graph.location, updatedGraph)
+          .writeFile(newLocation, updatedGraph)
           .pipe(map(() => updatedGraph));
       }),
     );
