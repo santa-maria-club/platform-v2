@@ -30,6 +30,11 @@ export interface IGraphService {
     edges: Edge[],
     options: GraphOptions,
   ) => Observable<Graph>;
+  rename: (
+    oldName: string,
+    newName: string,
+    options: GraphOptions,
+  ) => Observable<void>;
 }
 
 export class GraphServiceMock implements IGraphService {
@@ -61,6 +66,9 @@ export class GraphServiceMock implements IGraphService {
       nodes,
       edges,
     });
+  }
+  rename() {
+    return of(null);
   }
 }
 
@@ -114,5 +122,11 @@ export class GraphService implements IGraphService {
           .pipe(map(() => updatedGraph));
       }),
     );
+  }
+
+  rename(oldName: string, newName: string, options: GraphOptions) {
+    const oldLocation = `${options.rootDirectory}/assets/graphs/${oldName}.json`;
+    const newLocation = `${options.rootDirectory}/assets/graphs/${newName}.json`;
+    return this.fileManagerService.rename(oldLocation, newLocation);
   }
 }

@@ -117,4 +117,21 @@ describe('GraphService', () => {
       });
     });
   });
+
+  describe('Rename Method', () => {
+    it('should call rename with old and new location', () => {
+      // arrange
+      const renameSpy = jest.spyOn(fileManagerService, 'rename');
+      const rootDirectory = '/home';
+      const oldName = 'old';
+      const newName = 'new';
+      const oldLocation = `${rootDirectory}/assets/graphs/old.json`;
+      const newLocation = `${rootDirectory}/assets/graphs/new.json`;
+      // act
+      service.rename(oldName, newName, { rootDirectory }).subscribe();
+      // assert
+      expect(renameSpy).toHaveBeenCalled();
+      expect(renameSpy).toHaveBeenCalledWith(oldLocation, newLocation);
+    });
+  });
 });
