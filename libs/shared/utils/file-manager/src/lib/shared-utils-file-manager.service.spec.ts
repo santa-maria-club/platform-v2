@@ -2,12 +2,15 @@ import { Test } from '@nestjs/testing';
 
 import {
   SHARED_UTILS_FILE_MANAGER_SERVICE,
-  ISharedUtilsFileManagerService,
   SharedUtilsFileManagerService,
 } from './shared-utils-file-manager.service';
+import type { ISharedUtilsFileManagerService } from './shared-utils-file-manager.service';
+import { SHARED_UTILS_FILE_MANAGER_FILE_SYSTEM } from './shared-utils-file-manager-file-system.service';
+import { SharedUtilsFileManagerFileSystemMock } from './shared-utils-file-manager-file-system.service.mock';
 
 describe('SharedUtilsFileManagerService', () => {
   let service: ISharedUtilsFileManagerService;
+  let fs: SharedUtilsFileManagerFileSystemMock;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -16,11 +19,18 @@ describe('SharedUtilsFileManagerService', () => {
           provide: SHARED_UTILS_FILE_MANAGER_SERVICE,
           useClass: SharedUtilsFileManagerService,
         },
+        {
+          provide: SHARED_UTILS_FILE_MANAGER_FILE_SYSTEM,
+          useClass: SharedUtilsFileManagerFileSystemMock,
+        },
       ],
     }).compile();
 
     service = module.get<ISharedUtilsFileManagerService>(
       SHARED_UTILS_FILE_MANAGER_SERVICE,
+    );
+    fs = module.get<SharedUtilsFileManagerFileSystemMock>(
+      SHARED_UTILS_FILE_MANAGER_FILE_SYSTEM,
     );
   });
 
@@ -33,7 +43,7 @@ describe('SharedUtilsFileManagerService', () => {
       // arrange
       const name = 'test';
       const path = `${__dirname}/assets/graphs/${name}.json`;
-      const writeFileSpy = jest.spyOn(service.fs, 'writeFile');
+      const writeFileSpy = jest.spyOn(fs, 'writeFile');
       const content = { name };
       const contentAsString = JSON.stringify(content);
       // act
@@ -48,7 +58,7 @@ describe('SharedUtilsFileManagerService', () => {
     it('should read directory and return a list of files', () => {
       // arrange
       const path = `${__dirname}/assets/graphs`;
-      const readDirSpy = jest.spyOn(service.fs, 'readdir');
+      const readDirSpy = jest.spyOn(fs, 'readdir');
       // act
       service.readDirectory(path).subscribe();
       // assert
@@ -61,12 +71,12 @@ describe('SharedUtilsFileManagerService', () => {
     it('should read a file and return its content', () => {
       // arrange
       const path = `${__dirname}/assets/graphs`;
-      const readFileSpy = jest.spyOn(service.fs, 'readFile');
+      const readFileSpy = jest.spyOn(fs, 'readFile');
       // act
       service.readFile(path).subscribe();
       // assert
       expect(readFileSpy).toHaveBeenCalled();
-      expect(readFileSpy).toHaveBeenCalledWith(path, 'utf8');
+      expect(readFileSpy).toHaveBeenCalledWith(path);
     });
   });
 
@@ -75,7 +85,7 @@ describe('SharedUtilsFileManagerService', () => {
       // arrange
       const oldLocation = `${__dirname}/assets/graphs/sample.json`;
       const newLocation = `${__dirname}/assets/graphs/sample.json`;
-      const renameSpy = jest.spyOn(service.fs, 'rename');
+      const renameSpy = jest.spyOn(fs, 'rename');
       // act
       service.rename(oldLocation, newLocation).subscribe();
       // assert

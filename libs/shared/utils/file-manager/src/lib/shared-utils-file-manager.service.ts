@@ -1,49 +1,28 @@
-import { promises } from 'fs';
-import { defer, Observable, of } from 'rxjs';
+import { Inject } from '@nestjs/common';
+import { defer, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
+import {
+  ISharedUtilsFileManagerFileSystem,
+  SHARED_UTILS_FILE_MANAGER_FILE_SYSTEM,
+} from './shared-utils-file-manager-file-system.service';
 
 export const SHARED_UTILS_FILE_MANAGER_SERVICE =
   'SHARED_UTILS_FILE_MANAGER_SERVICE';
 
 export interface ISharedUtilsFileManagerService {
-  fs: {
-    writeFile: (location: string, content: string) => Promise<void>;
-    readdir: (location: string) => Promise<string[]>;
-    readFile: (location: string) => Promise<unknown>;
-    rename: (oldLocation: string, newLocation: string) => Promise<void>;
-  };
-  writeFile: (location: string, content: unknown) => Observable<void>;
-  readDirectory: (location: string) => Observable<string[]>;
-  readFile: (location: string) => Observable<unknown>;
-  rename: (oldLocation: string, newLocation: string) => Observable<void>;
-}
-
-export class SharedUtilsFileManagerServiceMock
-  implements ISharedUtilsFileManagerService {
-  fs: null;
-  writeFile() {
-    return of(null);
-  }
-  readDirectory() {
-    return of(['sample.json', 'sample-123.json']);
-  }
-  readFile(location: string) {
-    return of({
-      id: '123',
-      name: 'name-123',
-      location,
-      nodes: [],
-      edges: [],
-    });
-  }
-  rename() {
-    return of(null);
-  }
+  writeFile(location: string, content: unknown): Observable<void>;
+  readDirectory(location: string): Observable<string[]>;
+  readFile(location: string): Observable<unknown>;
+  rename(oldLocation: string, newLocation: string): Observable<void>;
 }
 
 export class SharedUtilsFileManagerService
   implements ISharedUtilsFileManagerService {
-  fs = promises;
+  constructor(
+    @Inject(SHARED_UTILS_FILE_MANAGER_FILE_SYSTEM)
+    private fs: ISharedUtilsFileManagerFileSystem,
+  ) {}
 
   writeFile(location: string, content: unknown) {
     return defer(() => this.fs.writeFile(location, JSON.stringify(content)));
@@ -54,7 +33,7 @@ export class SharedUtilsFileManagerService
   }
 
   readFile(location: string) {
-    return defer(() => this.fs.readFile(location, 'utf8')).pipe(
+    return defer(() => this.fs.readFile(location)).pipe(
       map((file) => JSON.parse(file)),
     );
   }
