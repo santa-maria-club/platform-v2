@@ -69,4 +69,18 @@ describe('SharedUtilsFileManagerService', () => {
       expect(readFileSpy).toHaveBeenCalledWith(path, 'utf8');
     });
   });
+
+  describe('Rename Method', () => {
+    it('should rename a file', () => {
+      // arrange
+      const oldLocation = `${__dirname}/assets/graphs/sample.json`;
+      const newLocation = `${__dirname}/assets/graphs/sample.json`;
+      const renameSpy = jest.spyOn(service.fs, 'rename');
+      // act
+      service.rename(oldLocation, newLocation).subscribe();
+      // assert
+      expect(renameSpy).toHaveBeenCalled();
+      expect(renameSpy).toHaveBeenCalledWith(oldLocation, newLocation);
+    });
+  });
 });

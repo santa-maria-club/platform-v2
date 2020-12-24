@@ -10,10 +10,12 @@ export interface ISharedUtilsFileManagerService {
     writeFile: (location: string, content: string) => Promise<void>;
     readdir: (location: string) => Promise<string[]>;
     readFile: (location: string) => Promise<unknown>;
+    rename: (oldLocation: string, newLocation: string) => Promise<void>;
   };
   writeFile: (location: string, content: unknown) => Observable<void>;
   readDirectory: (location: string) => Observable<string[]>;
   readFile: (location: string) => Observable<unknown>;
+  rename: (oldLocation: string, newLocation: string) => Observable<void>;
 }
 
 export class SharedUtilsFileManagerServiceMock
@@ -34,6 +36,9 @@ export class SharedUtilsFileManagerServiceMock
       edges: [],
     });
   }
+  rename() {
+    return of(null);
+  }
 }
 
 export class SharedUtilsFileManagerService
@@ -52,5 +57,9 @@ export class SharedUtilsFileManagerService
     return defer(() => this.fs.readFile(location, 'utf8')).pipe(
       map((file) => JSON.parse(file)),
     );
+  }
+
+  rename(oldLocation: string, newLocation: string) {
+    return defer(() => this.fs.rename(oldLocation, newLocation));
   }
 }
