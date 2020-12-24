@@ -42,3 +42,12 @@ content-type: application/json
   "nodes":[],
   "edges":[]
 }
+
+###
+
+PATCH http://localhost:3333/api/graphs/89ccf40b-2f47-4100-a90e-8f23fa5ece3f/rename HTTP/1.1
+content-type: application/json
+
+{
+  "newName": "new-name"
+}
