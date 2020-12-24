@@ -39,38 +39,41 @@ describe('GraphService', () => {
       // arrange
       const name = 'test';
       const createGraphDto = { name };
-      const writeFileSpy = jest.spyOn(fileManagerService, 'writeFile');
-      const rootDirectory = '/home';
-      const location = `${rootDirectory}/assets/graphs/${name}.json`;
+      const options = { rootDirectory: '/home' };
+      const expectedLocation = `${options.rootDirectory}/assets/graphs/${name}.json`;
       const expectedGraph = {
         id: '',
         edges: [],
-        location,
+        location: expectedLocation,
         name,
         nodes: [],
       };
+      const writeFileSpy = jest.spyOn(fileManagerService, 'writeFile');
       // act
       service
-        .create(createGraphDto, { rootDirectory })
+        .create(createGraphDto, options)
         .subscribe((createdGraph) => (expectedGraph.id = createdGraph.id));
       // assert
       expect(writeFileSpy).toHaveBeenCalled();
-      expect(writeFileSpy).toHaveBeenCalledWith(location, expectedGraph);
+      expect(writeFileSpy).toHaveBeenCalledWith(
+        expectedLocation,
+        expectedGraph,
+      );
     });
   });
 
   describe('List Method', () => {
     it('should call readDirectory and then readFile for each file', () => {
       // arrange
+      const options = { rootDirectory: '/home' };
+      const expectedLocation = `${options.rootDirectory}/assets/graphs`;
       const readDirectorySpy = jest.spyOn(fileManagerService, 'readDirectory');
       const readFileSpy = jest.spyOn(fileManagerService, 'readFile');
-      const rootDirectory = '/home';
-      const directoryLocation = `${rootDirectory}/assets/graphs`;
       // act
-      service.list({ rootDirectory }).subscribe();
+      service.list(options).subscribe();
       // assert
       expect(readDirectorySpy).toHaveBeenCalled();
-      expect(readDirectorySpy).toHaveBeenCalledWith(directoryLocation);
+      expect(readDirectorySpy).toHaveBeenCalledWith(expectedLocation);
       expect(readFileSpy).toHaveBeenCalledTimes(2);
     });
   });
@@ -79,31 +82,29 @@ describe('GraphService', () => {
     it('should call write file for the respective graph', () => {
       // arrange
       const graphId = '456';
-      const rootDirectory = '/home';
+      const options = { rootDirectory: '/home' };
       const graph = {
         id: '456',
         name: 'name-456',
-        location: `${rootDirectory}/assets/graphs/name-456.json`,
+        location: `${options.rootDirectory}/assets/graphs/name-456.json`,
         nodes: [{ id: '4567', kind: 'faucet', label: 'Faucet #1' }],
         edges: [],
       };
-      const nodes = [];
-      const edges = [];
-      const expectedLocation = `${rootDirectory}/assets/graphs/name-456.json`;
+      const changes = { nodes: [], edges: [] };
+      const expectedLocation = `${options.rootDirectory}/assets/graphs/name-456.json`;
       const writeFileSpy = jest.spyOn(fileManagerService, 'writeFile');
       const viewSpy = jest
         .spyOn(service, 'view')
         .mockImplementation(() => of(graph));
       // act
-      service.update(graphId, nodes, edges, { rootDirectory }).subscribe();
+      service.update(graphId, changes, options).subscribe();
       // assert
       expect(viewSpy).toHaveBeenCalled();
-      expect(viewSpy).toHaveBeenCalledWith(graphId, { rootDirectory });
+      expect(viewSpy).toHaveBeenCalledWith(graphId, options);
       expect(writeFileSpy).toHaveBeenCalled();
       expect(writeFileSpy).toHaveBeenCalledWith(expectedLocation, {
         ...graph,
-        nodes,
-        edges,
+        ...changes,
       });
     });
   });
@@ -113,7 +114,7 @@ describe('GraphService', () => {
       // arrange
       const graphId = '456';
       const rootDirectory = '/home';
-      const newName = 'new';
+      const name = 'new';
       const graph = {
         id: '456',
         name: 'name-456',
@@ -123,27 +124,35 @@ describe('GraphService', () => {
       };
       const updatedGraph = {
         id: '456',
-        name: newName,
-        location: `${rootDirectory}/assets/graphs/${newName}.json`,
+        name,
+        location: `${rootDirectory}/assets/graphs/${name}.json`,
         nodes: [{ id: '4567', kind: 'faucet', label: 'Faucet #1' }],
         edges: [],
       };
+      const changes = {
+        name,
+        location: `${rootDirectory}/assets/graphs/${name}.json`,
+      };
       const oldLocation = `${rootDirectory}/assets/graphs/name-456.json`;
-      const newLocation = `${rootDirectory}/assets/graphs/${newName}.json`;
+      const newLocation = `${rootDirectory}/assets/graphs/${name}.json`;
       const renameSpy = jest.spyOn(fileManagerService, 'rename');
-      const writeFileSpy = jest.spyOn(fileManagerService, 'writeFile');
       const viewSpy = jest
         .spyOn(service, 'view')
         .mockImplementation(() => of(graph));
+      const updateSpy = jest
+        .spyOn(service, 'update')
+        .mockImplementation(() => of(updatedGraph));
       // act
-      service.rename(graphId, newName, { rootDirectory }).subscribe();
+      service.rename(graphId, name, { rootDirectory }).subscribe();
       // assert
       expect(viewSpy).toHaveBeenCalled();
       expect(viewSpy).toHaveBeenCalledWith(graphId, { rootDirectory });
+      expect(updateSpy).toHaveBeenCalled();
+      expect(updateSpy).toHaveBeenCalledWith(graphId, changes, {
+        rootDirectory,
+      });
       expect(renameSpy).toHaveBeenCalled();
       expect(renameSpy).toHaveBeenCalledWith(oldLocation, newLocation);
-      expect(writeFileSpy).toHaveBeenCalled();
-      expect(writeFileSpy).toHaveBeenCalledWith(newLocation, updatedGraph);
     });
   });
 });
