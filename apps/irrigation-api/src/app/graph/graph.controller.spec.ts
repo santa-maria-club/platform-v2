@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { GraphController } from './graph.controller';
-import { GraphServiceMock, GRAPH_SERVICE } from './graph.service';
-import type { IGraphService } from './graph.service';
+import { GRAPH_SERVICE } from './graph.service';
+import { GraphServiceMock } from './graph.service.mock';
 
 describe('GraphController', () => {
   let controller: GraphController;
-  let graphService: IGraphService;
+  let graphService: GraphServiceMock;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,7 +20,7 @@ describe('GraphController', () => {
     }).compile();
 
     controller = module.get<GraphController>(GraphController);
-    graphService = module.get<IGraphService>(GRAPH_SERVICE);
+    graphService = module.get<GraphServiceMock>(GRAPH_SERVICE);
   });
 
   it('should be defined', () => {
