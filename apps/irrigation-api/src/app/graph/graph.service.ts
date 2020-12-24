@@ -23,6 +23,16 @@ export interface IGraphService {
   ) => Observable<Graph>;
   list: (options: GraphOptions) => Observable<Graph[]>;
   view: (graphId: string, options: GraphOptions) => Observable<Graph>;
+
+  /**
+   * Add a list of nodes and edges to a given graph.
+   *
+   * @param graphId The identifier of the graph that's going to be updated.
+   * @param changes A Partial version of the graph with the fields to update.
+   * @param options An options object
+   * @returns {Observable<Graph>} An observable that emits the updated graph
+   * with the given nodes and edges.
+   */
   update: (
     graphId: string,
     changes: Partial<Graph>,
