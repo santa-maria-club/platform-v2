@@ -24,6 +24,7 @@ export interface IGraphService {
     options: GraphOptions,
   ) => Observable<Graph>;
   list: (options: GraphOptions) => Observable<Graph[]>;
+  view: (graphId: string, options: GraphOptions) => Observable<Graph>;
   update: (
     graphId: string,
     nodes: Node[],
@@ -34,7 +35,7 @@ export interface IGraphService {
     oldName: string,
     newName: string,
     options: GraphOptions,
-  ) => Observable<void>;
+  ) => Observable<Graph>;
 }
 
 export class GraphServiceMock implements IGraphService {
@@ -57,6 +58,15 @@ export class GraphServiceMock implements IGraphService {
         edges: [],
       },
     ]);
+  }
+  view(graphId: string, options: GraphOptions) {
+    return of({
+      id: graphId,
+      name: 'name-123',
+      location: `${options.rootDirectory}/assets/graphs/name-123.json`,
+      nodes: [],
+      edges: [],
+    });
   }
   update(graphId: string, nodes: Node[], edges: Edge[], options: GraphOptions) {
     return of({
@@ -108,13 +118,18 @@ export class GraphService implements IGraphService {
       );
   }
 
-  update(graphId: string, nodes: Node[], edges: Edge[], options: GraphOptions) {
+  view(graphId: string, options: GraphOptions) {
     return this.list(options).pipe(
       map((graphs) =>
         graphs
           .filter((graph) => graph.id === graphId)
           .reduce((_, curr) => curr),
       ),
+    );
+  }
+
+  update(graphId: string, nodes: Node[], edges: Edge[], options: GraphOptions) {
+    return this.view(graphId, options).pipe(
       mergeMap((graph) => {
         const updatedGraph = { ...graph, nodes, edges };
         return this.fileManagerService
@@ -124,9 +139,24 @@ export class GraphService implements IGraphService {
     );
   }
 
-  rename(oldName: string, newName: string, options: GraphOptions) {
-    const oldLocation = `${options.rootDirectory}/assets/graphs/${oldName}.json`;
+  rename(graphId: string, newName: string, options: GraphOptions) {
     const newLocation = `${options.rootDirectory}/assets/graphs/${newName}.json`;
-    return this.fileManagerService.rename(oldLocation, newLocation);
+    return this.view(graphId, options).pipe(
+      mergeMap((graph) => {
+        return this.fileManagerService
+          .rename(graph.location, newLocation)
+          .pipe(map(() => graph));
+      }),
+      mergeMap((graph) => {
+        const updatedGraph = {
+          ...graph,
+          name: newName,
+          location: newLocation,
+        };
+        return this.fileManagerService
+          .writeFile(graph.location, updatedGraph)
+          .pipe(map(() => updatedGraph));
+      }),
+    );
   }
 }

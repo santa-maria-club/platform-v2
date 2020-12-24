@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { of } from 'rxjs';
 
 import {
   SharedUtilsFileManagerServiceMock,
@@ -7,7 +8,6 @@ import {
 import type { ISharedUtilsFileManagerService } from '@platform/shared/utils/file-manager';
 import { GraphService, GRAPH_SERVICE } from './graph.service';
 import type { IGraphService } from './graph.service';
-import { of } from 'rxjs';
 
 describe('GraphService', () => {
   let service: IGraphService;
@@ -80,35 +80,25 @@ describe('GraphService', () => {
       // arrange
       const graphId = '456';
       const rootDirectory = '/home';
-      const graphs = [
-        {
-          id: '123',
-          name: 'name-123',
-          location: `${rootDirectory}/assets/graphs/name-123.json`,
-          nodes: [],
-          edges: [],
-        },
-        {
-          id: '456',
-          name: 'name-456',
-          location: `${rootDirectory}/assets/graphs/name-456.json`,
-          nodes: [{ id: '4567', kind: 'faucet', label: 'Faucet #1' }],
-          edges: [],
-        },
-      ];
-      const graph = graphs.find((graph) => graph.id === graphId);
+      const graph = {
+        id: '456',
+        name: 'name-456',
+        location: `${rootDirectory}/assets/graphs/name-456.json`,
+        nodes: [{ id: '4567', kind: 'faucet', label: 'Faucet #1' }],
+        edges: [],
+      };
       const nodes = [];
       const edges = [];
       const expectedLocation = `${rootDirectory}/assets/graphs/name-456.json`;
       const writeFileSpy = jest.spyOn(fileManagerService, 'writeFile');
-      const listSpy = jest
-        .spyOn(service, 'list')
-        .mockImplementation(() => of(graphs));
+      const viewSpy = jest
+        .spyOn(service, 'view')
+        .mockImplementation(() => of(graph));
       // act
       service.update(graphId, nodes, edges, { rootDirectory }).subscribe();
       // assert
-      expect(listSpy).toHaveBeenCalled();
-      expect(listSpy).toHaveBeenCalledWith({ rootDirectory });
+      expect(viewSpy).toHaveBeenCalled();
+      expect(viewSpy).toHaveBeenCalledWith(graphId, { rootDirectory });
       expect(writeFileSpy).toHaveBeenCalled();
       expect(writeFileSpy).toHaveBeenCalledWith(expectedLocation, {
         ...graph,
@@ -121,15 +111,37 @@ describe('GraphService', () => {
   describe('Rename Method', () => {
     it('should call rename with old and new location', () => {
       // arrange
-      const renameSpy = jest.spyOn(fileManagerService, 'rename');
+      const graphId = '456';
       const rootDirectory = '/home';
-      const oldName = 'old';
       const newName = 'new';
-      const oldLocation = `${rootDirectory}/assets/graphs/old.json`;
-      const newLocation = `${rootDirectory}/assets/graphs/new.json`;
+      const graph = {
+        id: '456',
+        name: 'name-456',
+        location: `${rootDirectory}/assets/graphs/name-456.json`,
+        nodes: [{ id: '4567', kind: 'faucet', label: 'Faucet #1' }],
+        edges: [],
+      };
+      const updatedGraph = {
+        id: '456',
+        name: newName,
+        location: `${rootDirectory}/assets/graphs/${newName}.json`,
+        nodes: [{ id: '4567', kind: 'faucet', label: 'Faucet #1' }],
+        edges: [],
+      };
+      const oldLocation = `${rootDirectory}/assets/graphs/name-456.json`;
+      const newLocation = `${rootDirectory}/assets/graphs/${newName}.json`;
+      const renameSpy = jest.spyOn(fileManagerService, 'rename');
+      const writeFileSpy = jest.spyOn(fileManagerService, 'writeFile');
+      const viewSpy = jest
+        .spyOn(service, 'view')
+        .mockImplementation(() => of(graph));
       // act
-      service.rename(oldName, newName, { rootDirectory }).subscribe();
+      service.rename(graphId, newName, { rootDirectory }).subscribe();
       // assert
+      expect(viewSpy).toHaveBeenCalled();
+      expect(viewSpy).toHaveBeenCalledWith(graphId, { rootDirectory });
+      expect(writeFileSpy).toHaveBeenCalled();
+      expect(writeFileSpy).toHaveBeenCalledWith(oldLocation, updatedGraph);
       expect(renameSpy).toHaveBeenCalled();
       expect(renameSpy).toHaveBeenCalledWith(oldLocation, newLocation);
     });
