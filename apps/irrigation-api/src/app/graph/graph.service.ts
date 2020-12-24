@@ -4,9 +4,7 @@ import { map, mergeMap } from 'rxjs/operators';
 
 import type {
   CreateGraphDto,
-  Edge,
   Graph,
-  Node,
 } from '@platform/shared/utils/irrigation-api-interfaces';
 import { createGraphFromCreateGraphDto } from '@platform/shared/utils/irrigation-creators';
 import type { ISharedUtilsFileManagerService } from '@platform/shared/utils/file-manager';
@@ -27,8 +25,7 @@ export interface IGraphService {
   view: (graphId: string, options: GraphOptions) => Observable<Graph>;
   update: (
     graphId: string,
-    nodes: Node[],
-    edges: Edge[],
+    changes: Partial<Graph>,
     options: GraphOptions,
   ) => Observable<Graph>;
   rename: (
@@ -68,13 +65,13 @@ export class GraphServiceMock implements IGraphService {
       edges: [],
     });
   }
-  update(graphId: string, nodes: Node[], edges: Edge[], options: GraphOptions) {
+  update(graphId: string, changes: Partial<Graph>) {
     return of({
       id: graphId,
-      name: 'name-123',
-      location: `${options.rootDirectory}/assets/graphs/name-123.json`,
-      nodes,
-      edges,
+      location: changes.location,
+      name: changes.name,
+      nodes: changes.nodes,
+      edges: changes.edges,
     });
   }
   rename() {
@@ -128,10 +125,10 @@ export class GraphService implements IGraphService {
     );
   }
 
-  update(graphId: string, nodes: Node[], edges: Edge[], options: GraphOptions) {
+  update(graphId: string, changes: Partial<Graph>, options: GraphOptions) {
     return this.view(graphId, options).pipe(
       mergeMap((graph) => {
-        const updatedGraph = { ...graph, nodes, edges };
+        const updatedGraph = { ...graph, ...changes };
         return this.fileManagerService
           .writeFile(graph.location, updatedGraph)
           .pipe(map(() => updatedGraph));
@@ -139,24 +136,23 @@ export class GraphService implements IGraphService {
     );
   }
 
-  rename(graphId: string, newName: string, options: GraphOptions) {
-    const newLocation = `${options.rootDirectory}/assets/graphs/${newName}.json`;
-    return this.view(graphId, options).pipe(
-      mergeMap((graph) =>
-        this.fileManagerService
-          .rename(graph.location, newLocation)
-          .pipe(map(() => graph)),
+  rename(graphId: string, name: string, options: GraphOptions) {
+    return combineLatest([
+      this.view(graphId, options),
+      this.update(
+        graphId,
+        {
+          name,
+          location: `${options.rootDirectory}/assets/graphs/${name}.json`,
+        },
+        options,
       ),
-      mergeMap((graph) => {
-        const updatedGraph = {
-          ...graph,
-          name: newName,
-          location: newLocation,
-        };
-        return this.fileManagerService
-          .writeFile(newLocation, updatedGraph)
-          .pipe(map(() => updatedGraph));
-      }),
+    ]).pipe(
+      mergeMap(([oldGraph, newGraph]) =>
+        this.fileManagerService
+          .rename(oldGraph.location, newGraph.location)
+          .pipe(map(() => newGraph)),
+      ),
     );
   }
 }
