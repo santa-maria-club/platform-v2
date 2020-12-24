@@ -140,10 +140,10 @@ describe('GraphService', () => {
       // assert
       expect(viewSpy).toHaveBeenCalled();
       expect(viewSpy).toHaveBeenCalledWith(graphId, { rootDirectory });
-      expect(writeFileSpy).toHaveBeenCalled();
-      expect(writeFileSpy).toHaveBeenCalledWith(oldLocation, updatedGraph);
       expect(renameSpy).toHaveBeenCalled();
       expect(renameSpy).toHaveBeenCalledWith(oldLocation, newLocation);
+      expect(writeFileSpy).toHaveBeenCalled();
+      expect(writeFileSpy).toHaveBeenCalledWith(newLocation, updatedGraph);
     });
   });
 });
