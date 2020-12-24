@@ -54,17 +54,34 @@ describe('GraphController', () => {
     });
   });
 
-  it('should call update from graph service', () => {
-    // arrange
-    const graphId = '123';
-    const nodes = [];
-    const edges = [];
-    const updateSpy = jest.spyOn(graphService, 'update');
-    const options = { rootDirectory: __dirname };
-    // act
-    controller.update(graphId, nodes, edges).subscribe();
-    // assert
-    expect(updateSpy).toHaveBeenCalled();
-    expect(updateSpy).toHaveBeenCalledWith(graphId, nodes, edges, options);
+  describe('Update Method', () => {
+    it('should call update from graph service', () => {
+      // arrange
+      const graphId = '123';
+      const nodes = [];
+      const edges = [];
+      const updateSpy = jest.spyOn(graphService, 'update');
+      const options = { rootDirectory: __dirname };
+      // act
+      controller.update(graphId, nodes, edges).subscribe();
+      // assert
+      expect(updateSpy).toHaveBeenCalled();
+      expect(updateSpy).toHaveBeenCalledWith(graphId, nodes, edges, options);
+    });
+  });
+
+  describe('Rename Method', () => {
+    it('should call rename from graph service', () => {
+      // arrange
+      const graphId = '123';
+      const newName = 'new-name';
+      const renameSpy = jest.spyOn(graphService, 'rename');
+      const options = { rootDirectory: __dirname };
+      // act
+      controller.rename(graphId, newName).subscribe();
+      // assert
+      expect(renameSpy).toHaveBeenCalled();
+      expect(renameSpy).toHaveBeenCalledWith(graphId, newName, options);
+    });
   });
 });

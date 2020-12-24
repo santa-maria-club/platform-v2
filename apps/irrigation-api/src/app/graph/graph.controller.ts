@@ -4,6 +4,7 @@ import {
   Get,
   Inject,
   Param,
+  Patch,
   Post,
   Put,
 } from '@nestjs/common';
@@ -41,6 +42,13 @@ export class GraphController {
     @Body('edges') edges: Edge[],
   ) {
     return this.graphService.update(graphId, nodes, edges, {
+      rootDirectory: __dirname,
+    });
+  }
+
+  @Patch(':graphId/rename')
+  rename(@Param('graphId') graphId: string, @Body('newName') newName: string) {
+    return this.graphService.rename(graphId, newName, {
       rootDirectory: __dirname,
     });
   }
