@@ -31,6 +31,7 @@ export interface IGraphService {
    *
    * @param createGraphDto Partial version of the graph prior to it's creation.
    * @param options Options that allow customization of the method's behavior.
+   * @returns An observable that emits the newly created graph.
    */
   create(
     createGraphDto: CreateGraphDto,
@@ -41,7 +42,7 @@ export interface IGraphService {
    * Retrieves all the stored graphs.
    *
    * @param options An options object
-   * @returns {Observable<Graph>} An observable that emits the all the graphs.
+   * @returns An observable that emits the all the graphs.
    */
   list(options: GraphOptions): Observable<Graph[]>;
 
@@ -50,7 +51,7 @@ export interface IGraphService {
    *
    * @param graphId The identifier of the graph that's going to be retrieved.
    * @param options An options object
-   * @returns {Observable<Graph>} An observable that emits the requested graph.
+   * @returns An observable that emits the requested graph.
    */
   view(graphId: string, options: GraphOptions): Observable<Graph>;
 
@@ -60,7 +61,7 @@ export interface IGraphService {
    * @param graphId The identifier of the graph that's going to be updated.
    * @param changes A Partial version of the graph with the fields to update.
    * @param options An options object
-   * @returns {Observable<Graph>} An observable that emits the updated graph
+   * @returns An observable that emits the updated graph
    * with the given nodes and edges.
    */
   update(

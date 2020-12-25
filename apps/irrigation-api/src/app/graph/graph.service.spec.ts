@@ -5,13 +5,12 @@ import {
   SharedUtilsFileManagerServiceMock,
   SHARED_UTILS_FILE_MANAGER_SERVICE,
 } from '@platform/shared/utils/file-manager';
-import type { ISharedUtilsFileManagerService } from '@platform/shared/utils/file-manager';
 import { GraphService, GRAPH_SERVICE } from './graph.service';
 import type { IGraphService } from './graph.service';
 
 describe('GraphService', () => {
   let service: IGraphService;
-  let fileManagerService: ISharedUtilsFileManagerService;
+  let fileManagerService: SharedUtilsFileManagerServiceMock;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -25,7 +24,7 @@ describe('GraphService', () => {
     }).compile();
 
     service = module.get<IGraphService>(GRAPH_SERVICE);
-    fileManagerService = module.get<ISharedUtilsFileManagerService>(
+    fileManagerService = module.get<SharedUtilsFileManagerServiceMock>(
       SHARED_UTILS_FILE_MANAGER_SERVICE,
     );
   });
