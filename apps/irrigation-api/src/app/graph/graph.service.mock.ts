@@ -143,4 +143,18 @@ export class GraphServiceMock implements IGraphService {
       edges: [],
     });
   }
+
+  /**
+   * Mock version of the delete method from IGraphService.
+   *
+   * @param graphId Identifier of the graph to delete.
+   * @param options Options that allow customization of the method's behavior.
+   * @returns
+   * ```typescript
+   * of(true)
+   * ```
+   */
+  delete() {
+    return of(true);
+  }
 }

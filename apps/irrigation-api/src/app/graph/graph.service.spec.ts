@@ -154,4 +154,31 @@ describe('GraphService', () => {
       expect(renameSpy).toHaveBeenCalledWith(oldLocation, newLocation);
     });
   });
+
+  describe('Delete Method', () => {
+    it('should call delete file for the respective graph', () => {
+      // arrange
+      const graphId = '456';
+      const options = { rootDirectory: '/home' };
+      const expectedLocation = `${options.rootDirectory}/assets/graphs/name-456.json`;
+      const graph = {
+        id: graphId,
+        name: 'name-456',
+        location: expectedLocation,
+        nodes: [{ id: '4567', kind: 'faucet', label: 'Faucet #1' }],
+        edges: [],
+      };
+      const deleteFileSpy = jest.spyOn(fileManagerService, 'deleteFile');
+      const viewSpy = jest
+        .spyOn(service, 'view')
+        .mockImplementation(() => of(graph));
+      // act
+      service.delete(graphId, options).subscribe();
+      // assert
+      expect(viewSpy).toHaveBeenCalled();
+      expect(viewSpy).toHaveBeenCalledWith(graphId, options);
+      expect(deleteFileSpy).toHaveBeenCalled();
+      expect(deleteFileSpy).toHaveBeenCalledWith(expectedLocation);
+    });
+  });
 });
