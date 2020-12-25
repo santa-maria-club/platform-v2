@@ -1,5 +1,6 @@
 {
   "name": "platform",
+  "description": "Manage irrigation systems for indoor and outdoor growing.",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
