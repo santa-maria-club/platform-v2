@@ -52,4 +52,16 @@ export class SharedUtilsFileManagerFileSystemMock
   readdir() {
     return null;
   }
+
+  /**
+   * Mock version of the readdir method in ISharedUtilsFileManagerFileSystem
+   *
+   * @returns
+   * ```typescript
+   * null
+   * ```
+   */
+  deleteFile() {
+    return null;
+  }
 }

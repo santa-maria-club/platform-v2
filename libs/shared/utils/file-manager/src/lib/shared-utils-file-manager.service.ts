@@ -49,6 +49,14 @@ export interface ISharedUtilsFileManagerService {
    * @returns An observable that completes once the rename operation is done.
    */
   rename(oldLocation: string, newLocation: string): Observable<void>;
+
+  /**
+   * Delete a given file
+   *
+   * @param location A string pointing to the location of the file to delete.
+   * @returns An observable that completes once the delete operation is done.
+   */
+  deleteFile(location: string): Observable<void>;
 }
 
 /** Concrete implementation of the ISharedUtilsFileManagerService */
@@ -79,5 +87,10 @@ export class SharedUtilsFileManagerService
   /** @inheritDoc */
   rename(oldLocation: string, newLocation: string) {
     return defer(() => this.fs.rename(oldLocation, newLocation));
+  }
+
+  /** @inheritDoc */
+  deleteFile(location: string) {
+    return defer(() => this.fs.deleteFile(location));
   }
 }
