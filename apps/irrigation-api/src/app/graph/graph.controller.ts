@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -81,6 +82,20 @@ export class GraphController {
     @Body('name') name: string,
   ): Observable<Graph> {
     return this.graphService.rename(graphId, name, {
+      rootDirectory: __dirname,
+    });
+  }
+
+  /**
+   * Endpoint /graphs/:graphId DELETE
+   *
+   * This endpoint intention is to allow consumers deleting a graph via HTTP.
+   *
+   * @param graphId Identifier of the graph to delete.
+   */
+  @Delete(':graphId')
+  delete(@Param('graphId') graphId: string): Observable<boolean> {
+    return this.graphService.delete(graphId, {
       rootDirectory: __dirname,
     });
   }
