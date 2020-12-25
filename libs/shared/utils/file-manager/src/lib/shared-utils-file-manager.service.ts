@@ -2,10 +2,8 @@ import { Inject } from '@nestjs/common';
 import { defer, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import {
-  ISharedUtilsFileManagerFileSystem,
-  SHARED_UTILS_FILE_MANAGER_FILE_SYSTEM,
-} from './shared-utils-file-manager-file-system.service';
+import { SHARED_UTILS_FILE_MANAGER_FILE_SYSTEM } from './shared-utils-file-manager-file-system.service';
+import type { ISharedUtilsFileManagerFileSystem } from './shared-utils-file-manager-file-system.service';
 
 /**
  * Shared Utils File Manager Service Token used For Dependency Injection purposes.
@@ -74,7 +72,9 @@ export class SharedUtilsFileManagerService
 
   /** @inheritDoc */
   readDirectory(location: string) {
-    return defer(() => this.fs.readdir(location));
+    return defer(() => this.fs.readdir(location)).pipe(
+      map((files) => files.filter((file) => !!file.includes('.json'))),
+    );
   }
 
   /** @inheritDoc */
