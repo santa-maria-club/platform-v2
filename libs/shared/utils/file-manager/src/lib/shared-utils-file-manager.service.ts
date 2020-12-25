@@ -2,10 +2,8 @@ import { Inject } from '@nestjs/common';
 import { defer, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import {
-  ISharedUtilsFileManagerFileSystem,
-  SHARED_UTILS_FILE_MANAGER_FILE_SYSTEM,
-} from './shared-utils-file-manager-file-system.service';
+import { SHARED_UTILS_FILE_MANAGER_FILE_SYSTEM } from './shared-utils-file-manager-file-system.service';
+import type { ISharedUtilsFileManagerFileSystem } from './shared-utils-file-manager-file-system.service';
 
 /**
  * Shared Utils File Manager Service Token used For Dependency Injection purposes.
@@ -49,6 +47,14 @@ export interface ISharedUtilsFileManagerService {
    * @returns An observable that completes once the rename operation is done.
    */
   rename(oldLocation: string, newLocation: string): Observable<void>;
+
+  /**
+   * Delete a given file
+   *
+   * @param location A string pointing to the location of the file to delete.
+   * @returns An observable that completes once the delete operation is done.
+   */
+  deleteFile(location: string): Observable<void>;
 }
 
 /** Concrete implementation of the ISharedUtilsFileManagerService */
@@ -66,7 +72,9 @@ export class SharedUtilsFileManagerService
 
   /** @inheritDoc */
   readDirectory(location: string) {
-    return defer(() => this.fs.readdir(location));
+    return defer(() => this.fs.readdir(location)).pipe(
+      map((files) => files.filter((file) => !!file.includes('.json'))),
+    );
   }
 
   /** @inheritDoc */
@@ -79,5 +87,10 @@ export class SharedUtilsFileManagerService
   /** @inheritDoc */
   rename(oldLocation: string, newLocation: string) {
     return defer(() => this.fs.rename(oldLocation, newLocation));
+  }
+
+  /** @inheritDoc */
+  deleteFile(location: string) {
+    return defer(() => this.fs.deleteFile(location));
   }
 }

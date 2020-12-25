@@ -83,4 +83,18 @@ describe('GraphController', () => {
       expect(renameSpy).toHaveBeenCalledWith(graphId, name, options);
     });
   });
+
+  describe('Delete Method', () => {
+    it('should call delete from graph service', () => {
+      // arrange
+      const graphId = '123';
+      const options = { rootDirectory: __dirname };
+      const deleteSpy = jest.spyOn(graphService, 'delete');
+      // act
+      controller.delete(graphId).subscribe();
+      // assert
+      expect(deleteSpy).toHaveBeenCalled();
+      expect(deleteSpy).toHaveBeenCalledWith(graphId, options);
+    });
+  });
 });

@@ -41,6 +41,14 @@ export interface ISharedUtilsFileManagerFileSystem {
    * @returns A promise that resolves once the file has been renamed.
    */
   rename(oldLocation: string, newLocation: string): Promise<void>;
+
+  /**
+   * Delete the file in the given location
+   *
+   * @param location A string pointing to the location where the file is.
+   * @returns A promise that resolves once the file has been deleted.
+   */
+  deleteFile(location: string): Promise<void>;
 }
 
 /** Concrete implementation of the ISharedUtilsFileManagerFileSystem */
@@ -64,5 +72,10 @@ export class SharedUtilsFileManagerFileSystem
   /** @inheritDoc */
   readdir(location: string) {
     return promises.readdir(location);
+  }
+
+  /** @inheritDoc */
+  deleteFile(location: string) {
+    return promises.unlink(location);
   }
 }

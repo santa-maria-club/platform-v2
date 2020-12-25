@@ -93,4 +93,17 @@ describe('SharedUtilsFileManagerService', () => {
       expect(renameSpy).toHaveBeenCalledWith(oldLocation, newLocation);
     });
   });
+
+  describe('Delete File Method', () => {
+    it('should delete a file', () => {
+      // arrange
+      const location = `${__dirname}/assets/graphs/sample.json`;
+      const deleteSpy = jest.spyOn(fs, 'deleteFile');
+      // act
+      service.deleteFile(location).subscribe();
+      // assert
+      expect(deleteSpy).toHaveBeenCalled();
+      expect(deleteSpy).toHaveBeenCalledWith(location);
+    });
+  });
 });

@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { combineLatest, Observable, of } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mapTo, mergeMap } from 'rxjs/operators';
 
 import type {
   CreateGraphDto,
@@ -83,6 +83,16 @@ export interface IGraphService {
     name: string,
     options: GraphOptions,
   ): Observable<Graph>;
+
+  /**
+   * Delete a given graph.
+   *
+   * @param graphId The identifier of the graph that's going to be deleted.
+   * @param options An options object
+   * @returns An observable that emits a boolean once the graph is deleted.
+   * When the emitted value is false, the graph wasn't found.
+   */
+  delete(graphId: string, options: GraphOptions): Observable<boolean>;
 }
 
 /** Concrete implementation of the IGraphService */
@@ -176,6 +186,20 @@ export class GraphService implements IGraphService {
           .rename(oldGraph.location, newGraph.location)
           .pipe(map(() => newGraph)),
       ),
+    );
+  }
+
+  /** @inheritDoc */
+  delete(graphId: string, options: GraphOptions): Observable<boolean> {
+    return this.view(graphId, options).pipe(
+      mergeMap((graph) => {
+        if (!graph) {
+          return of(false);
+        }
+        return this.fileManagerService
+          .deleteFile(graph.location)
+          .pipe(mapTo(true));
+      }),
     );
   }
 }

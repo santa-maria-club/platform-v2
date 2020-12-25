@@ -65,4 +65,16 @@ export class SharedUtilsFileManagerServiceMock
   rename(): Observable<void> {
     return of(void 0);
   }
+
+  /**
+   * Mock version of the deleteFile method in ISharedUtilsFileManagerService
+   *
+   * @returns
+   * ```typescript
+   *  of(void 0);
+   * ```
+   */
+  deleteFile(): Observable<void> {
+    return of(void 0);
+  }
 }
