@@ -140,10 +140,137 @@
           }
         }
       }
+    },
+    "irrigation-web-client": {
+      "projectType": "application",
+      "root": "apps/irrigation-web-client",
+      "sourceRoot": "apps/irrigation-web-client/src",
+      "prefix": "platform",
+      "targets": {
+        "build": {
+          "executor": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/irrigation-web-client",
+            "index": "apps/irrigation-web-client/src/index.html",
+            "main": "apps/irrigation-web-client/src/main.ts",
+            "polyfills": "apps/irrigation-web-client/src/polyfills.ts",
+            "tsConfig": "apps/irrigation-web-client/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/irrigation-web-client/src/favicon.ico",
+              "apps/irrigation-web-client/src/assets"
+            ],
+            "styles": ["apps/irrigation-web-client/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/irrigation-web-client/src/environments/environment.ts",
+                  "with": "apps/irrigation-web-client/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "irrigation-web-client:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "irrigation-web-client:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "executor": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "irrigation-web-client:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/irrigation-web-client/src/**/*.ts",
+              "apps/irrigation-web-client/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/irrigation-web-client"],
+          "options": {
+            "jestConfig": "apps/irrigation-web-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "irrigation-web-client-e2e": {
+      "root": "apps/irrigation-web-client-e2e",
+      "sourceRoot": "apps/irrigation-web-client-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/irrigation-web-client-e2e/cypress.json",
+            "tsConfig": "apps/irrigation-web-client-e2e/tsconfig.e2e.json",
+            "devServerTarget": "irrigation-web-client:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "irrigation-web-client:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/irrigation-web-client-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
     }
   },
   "cli": {
     "defaultCollection": "@nrwl/nest"
   },
-  "defaultProject": "irrigation-api"
+  "defaultProject": "irrigation-api",
+  "generators": {
+    "@nrwl/angular:application": {
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress",
+      "strict": true
+    },
+    "@nrwl/angular:library": {
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
+    }
+  }
 }

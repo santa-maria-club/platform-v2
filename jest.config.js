@@ -4,5 +4,6 @@ module.exports = {
     '<rootDir>/libs/shared/utils/irrigation-api-interfaces',
     '<rootDir>/libs/shared/utils/irrigation-creators',
     '<rootDir>/libs/shared/utils/file-manager',
+    '<rootDir>/apps/irrigation-web-client',
   ],
 };
