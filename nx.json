@@ -34,6 +34,13 @@
     },
     "shared-utils-file-manager": {
       "tags": []
+    },
+    "irrigation-web-client": {
+      "tags": []
+    },
+    "irrigation-web-client-e2e": {
+      "tags": [],
+      "implicitDependencies": ["irrigation-web-client"]
     }
   }
 }
